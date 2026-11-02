@@ -136,7 +136,27 @@ def breadthFirstSearch(problem: SearchProblem):
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    # Each node of the priority queue contains a state, the path to it and the cost of that path
+    pqueue = util.PriorityQueue()
+    pqueue.push((problem.getStartState(), [], 0), 0)
+    visited = set()
+
+    while not pqueue.isEmpty():
+        state, path, cost = pqueue.pop()
+
+        if state not in visited:
+            visited.add(state)
+
+            if problem.isGoalState(state):
+                return path
+            
+            # Adding successors to priority queue. Now we do care about stepCost in UCS. Cost to succesor is current cost + stepCost, and that is also its priority for the pqueue
+            for successor, action, stepCost in problem.getSuccessors(state):
+                pqueue.push((successor, path + [action], cost + stepCost), cost + stepCost)
+    
+    # No solution
+    return []
 
 def nullHeuristic(state, problem=None):
     """
