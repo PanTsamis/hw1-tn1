@@ -296,14 +296,23 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # state = (position: (x, y) , unvisitedCorners: ((x1, y1), (x2, y2), (x3, y3), (x4, y4)))
+        # Check if starting position is a corner. If so, don't add it to unvisitedCorners
+        unvisitedCorners = ()
+        for corner in self.corners:
+            if self.startingPosition != corner:
+                unvisitedCorners += (corner,)
+
+        return (self.startingPosition, unvisitedCorners)
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # state = (position , unvisitedCorners)
+        # Check if unvisitedCorners contains nothing, if so goal has been reached
+        return not state[1]
 
     def getSuccessors(self, state: Any):
         """
@@ -315,7 +324,8 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
+        position, unvisitedCorners = state
+        x, y = position
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
@@ -326,6 +336,20 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+
+            if not hitsWall:
+                # If new cordinates are the ones of an unvisited corner, then make newUnvisitedCorners that doesn't include said cordinates
+                if (nextx, nexty) in unvisitedCorners:
+                    newUnvisitedCorners = ()
+                    for corner in unvisitedCorners:
+                        if (nextx, nexty) != corner:
+                            newUnvisitedCorners += (corner,)
+                    successors.append((((nextx, nexty), newUnvisitedCorners), action, 1))
+                else:
+                    successors.append((((nextx, nexty), unvisitedCorners), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
