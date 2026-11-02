@@ -81,14 +81,33 @@ def depthFirstSearch(problem: SearchProblem):
 
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
-
+    
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Each node of the stack contains a state and the path to it
+    stack = util.Stack()
+    stack.push((problem.getStartState(), []))
+    visited = set()
 
+    while not stack.isEmpty():
+        state, path = stack.pop()
+
+        if state not in visited:
+            visited.add(state)
+
+            if problem.isGoalState(state):
+                return path
+            
+            # Adding successors to stack. We don't care about stepCost in DFS. Path to succesor is current path + action to get to it
+            for successor, action, stepCost in problem.getSuccessors(state):
+                stack.push((successor, path + [action]))
+    
+    # No solution
+    return []
+    
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
