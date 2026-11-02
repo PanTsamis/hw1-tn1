@@ -111,7 +111,27 @@ def depthFirstSearch(problem: SearchProblem):
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    # Each node of the queue contains a state and the path to it
+    queue = util.Queue()
+    queue.push((problem.getStartState(), []))
+    visited = set()
+
+    while not queue.isEmpty():
+        state, path = queue.pop()
+
+        if state not in visited:
+            visited.add(state)
+
+            if problem.isGoalState(state):
+                return path
+            
+            # Adding successors to queue. We don't care about stepCost in BFS. Path to succesor is current path + action to get to it
+            for successor, action, stepCost in problem.getSuccessors(state):
+                queue.push((successor, path + [action]))
+    
+    # No solution
+    return []
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
