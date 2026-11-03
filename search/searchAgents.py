@@ -493,6 +493,7 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     # Else, the heuristic is the real maze distance from the current position to the furthest food
     # Pacman must eat every dot, and the maze distance is the shortest possible path to one
     # Distances are cached in problem.heuristicInfo
+
     heuristic = 0
     for food in foodGrid.asList():
         if (position, food) not in problem.heuristicInfo:
@@ -530,7 +531,8 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # BFS always eats the closest dot
+        return search.breadthFirstSearch(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -566,7 +568,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # goal = position with food
+        return self.food[x][y]
 
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:
     """
